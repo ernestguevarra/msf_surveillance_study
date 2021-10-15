@@ -21,10 +21,12 @@ library(spatialsampler)
 library(osmdata)
 ```
 
-# MSF Surveillance Study
+# Applying CSAS for a surveillance project in Massakory, Hadjer Lamis, Chad
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+Following is an example of how a CSAS sample would look like when applied to a study area in Massakory, Hadjer Lamis, Chad.
 
 ## Map of proposed study area
 
@@ -39,6 +41,8 @@ plot(st_geometry(regions), lwd = 2, add = TRUE)
 plot(st_geometry(villages), pch = 20, cex = 0.75, col = "red", add = TRUE)
 plot(dagana, border = "blue", lwd = 3, add = TRUE)
 ```
+
+<br>
 
 ## Spatial sample of villages using CSAS approach
 
