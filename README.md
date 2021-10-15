@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# msf\_surveillance\_study
+# MSF Surveillance Study
 
 <!-- badges: start -->
 <!-- badges: end -->

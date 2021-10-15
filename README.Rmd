@@ -18,9 +18,10 @@ library(sf)
 library(dplyr)
 library(sp)
 library(spatialsampler)
+library(osmdata)
 ```
 
-# msf_surveillance_study
+# MSF Surveillance Study
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -52,10 +53,15 @@ village_sample <- get_nearest_point(data = data.frame(dagana_villages),
                                     data.x = "LONG", data.y = "LAT",
                                     query = sp_points, n = 1)
 
+sp_osm <- opq(bbox = 'Massakory Hadjer Lamis chad') %>% 
+  add_osm_feature(key = 'highway', value = 'residential') %>% 
+  osmdata_sp()
+
 par(mar = c(0, 0, 0, 0))
 plot(dagana, lty = 0)
 plot(st_geometry(regions), lwd = 2, add = TRUE)
 plot(st_geometry(villages[dagana, ]), pch = 20, cex = 0.75, col = "red", add = TRUE)
+plot(sp_osm$osm_lines, lwd = 1, col = "gray90", add = TRUE)
 plot(dagana, border = "blue", lwd = 3, add = TRUE)
 points(x = village_sample$LONG, y = village_sample$LAT, 
        pch = "x", cex = 0.75, col = "black")
