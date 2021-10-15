@@ -1,0 +1,64 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(chad)
+library(sf)
+library(dplyr)
+library(sp)
+library(spatialsampler)
+```
+
+# msf_surveillance_study
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Map of proposed study area
+
+```{r, echo = FALSE, fig.align = "center"}
+dagana <- departments %>%
+  filter(admin2Name == "Dagana") %>%
+  st_geometry()
+
+par(mar = c(0, 0, 0, 0))
+plot(dagana, lty = 0)
+plot(st_geometry(regions), lwd = 2, add = TRUE)
+plot(st_geometry(villages), pch = 20, cex = 0.75, col = "red", add = TRUE)
+plot(dagana, border = "blue", lwd = 3, add = TRUE)
+```
+
+## Spatial sample of villages using CSAS approach
+
+```{r, echo = FALSE, fig.align = "center"}
+sp_points <- create_sp_grid(x = as_Spatial(dagana), area = 100, country = "Chad", type = "csas")
+
+sp_grid <- as(SpatialPixels(sp_points), "SpatialPolygons")
+
+dagana_villages <- villages[dagana, ]
+
+village_sample <- get_nearest_point(data = data.frame(dagana_villages),
+                                    data.x = "LONG", data.y = "LAT",
+                                    query = sp_points, n = 1)
+
+par(mar = c(0, 0, 0, 0))
+plot(dagana, lty = 0)
+plot(st_geometry(regions), lwd = 2, add = TRUE)
+plot(st_geometry(villages[dagana, ]), pch = 20, cex = 0.75, col = "red", add = TRUE)
+plot(dagana, border = "blue", lwd = 3, add = TRUE)
+points(x = village_sample$LONG, y = village_sample$LAT, 
+       pch = "x", cex = 0.75, col = "black")
+#plot(sp_points, pch = "x", cex = 0.75, col = "black", add = TRUE)
+plot(sp_grid, border = "darkgreen", lwd = 2, add = TRUE)
+```
