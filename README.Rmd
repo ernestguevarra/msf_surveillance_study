@@ -31,15 +31,16 @@ Following is an example of how a CSAS sample would look like when applied to a s
 ## Map of proposed study area
 
 ```{r, echo = FALSE, fig.align = "center"}
-dagana <- departments %>%
-  filter(admin2Name == "Dagana") %>%
+massakory <- districts %>%
+  filter(NomDistri == "Massakory") %>%
   st_geometry()
 
 par(mar = c(0, 0, 0, 0))
-plot(dagana, lty = 0)
+plot(massakory, lty = 0)
+plot(st_geometry(departments), lwd = 1, border = "gray70", add = TRUE)
 plot(st_geometry(regions), lwd = 2, add = TRUE)
-plot(st_geometry(villages), pch = 20, cex = 0.75, col = "red", add = TRUE)
-plot(dagana, border = "blue", lwd = 3, add = TRUE)
+plot(st_geometry(settlements), pch = 20, cex = 0.75, col = "red", add = TRUE)
+plot(massakory, border = "blue", lwd = 3, add = TRUE)
 ```
 
 <br>
@@ -47,14 +48,20 @@ plot(dagana, border = "blue", lwd = 3, add = TRUE)
 ## Spatial sample of villages using CSAS approach
 
 ```{r, echo = FALSE, fig.align = "center"}
-sp_points <- create_sp_grid(x = as_Spatial(dagana), area = 100, country = "Chad", type = "csas")
+sp_points <- create_sp_grid(
+  x = as_Spatial(massakory), 
+  area = 100, 
+  buffer = 10,
+  country = "Chad", 
+  type = "csas"
+)
 
 sp_grid <- as(SpatialPixels(sp_points), "SpatialPolygons")
 
-dagana_villages <- villages[dagana, ]
+massakory_villages <- settlements[massakory, ]
 
-village_sample <- get_nearest_point(data = data.frame(dagana_villages),
-                                    data.x = "LONG", data.y = "LAT",
+village_sample <- get_nearest_point(data = data.frame(massakory_villages),
+                                    data.x = "Longitude", data.y = "Latitude",
                                     query = sp_points, n = 1)
 
 sp_osm <- opq(bbox = 'Massakory Hadjer Lamis chad') %>% 
@@ -62,12 +69,12 @@ sp_osm <- opq(bbox = 'Massakory Hadjer Lamis chad') %>%
   osmdata_sp()
 
 par(mar = c(0, 0, 0, 0))
-plot(dagana, lty = 0)
+plot(massakory, lty = 0)
 plot(st_geometry(regions), lwd = 2, add = TRUE)
-plot(st_geometry(villages[dagana, ]), pch = 20, cex = 0.75, col = "red", add = TRUE)
+plot(st_geometry(villages[massakory, ]), pch = 20, cex = 0.75, col = "red", add = TRUE)
 plot(sp_osm$osm_lines, lwd = 1, col = "gray90", add = TRUE)
-plot(dagana, border = "blue", lwd = 3, add = TRUE)
-points(x = village_sample$LONG, y = village_sample$LAT, 
+plot(massakory, border = "blue", lwd = 3, add = TRUE)
+points(x = village_sample$Longitude, y = village_sample$Latitude, 
        pch = "x", cex = 0.75, col = "black")
 #plot(sp_points, pch = "x", cex = 0.75, col = "black", add = TRUE)
 plot(sp_grid, border = "darkgreen", lwd = 2, add = TRUE)
